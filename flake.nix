@@ -20,7 +20,7 @@
 			};
 			rust = pkgs.mkShell {
 				nativeBuildInputs = with pkgs; [
-					rustc cargo gcc rustfmt clippy
+					rustc cargo gcc rustfmt clippy rust-analyzer
 				];
 			};
 		});
