@@ -14,21 +14,33 @@ fn main() {
     let file = read_lines(file_path).expect("The input file should be there");
 
     let mut total_paper = 0;
+    let mut total_ribbon = 0;
     for line_reader in file {
         let line = line_reader.expect("Oh no, error reading line!");
+
         // surface area =
         // 2*l*w + 2*w*h + 2*h*l
         let (length, width, height) =
             parse_dimensions(line).expect("Could not parse dimensions from file");
+
         let surface_area = (2 * length * width) + (2 * width * height) + (2 * height * length);
 
+        let smallest = n_smallest(&[length, width, height], 2)
+            .expect("Could not find 2 smallest in dimensions");
+
         // slack area is the product of the 2 smallest dimensions
-        let slack_area = product_of_n_smallest(vec![length, width, height], 2)
-            .expect("n smallest larger than vec size");
+        let slack_area: i32 = smallest.iter().product();
+
+        // ribbon wrap = smallest perimiter of any one face
+        // ribbon bow = cubic volume of the dimensions
+        // ribbon length = wrap + bow
+        let ribbon_length = (smallest.iter().sum::<i32>() * 2) + (width * length * height);
 
         total_paper += surface_area + slack_area;
+        total_ribbon += ribbon_length;
     }
-    println!("total paper: {}", total_paper)
+    println!("total paper: {}", total_paper);
+    println!("total ribbon: {}", total_ribbon);
 }
 
 fn read_lines<P>(file_path: P) -> io::Result<Lines<BufReader<File>>>
@@ -62,14 +74,14 @@ fn parse_dimensions(text_dimensions: String) -> Result<(i32, i32, i32), ()> {
     Ok((length, width, height))
 }
 
-fn product_of_n_smallest(lengths: Vec<i32>, n: u32) -> Result<i32, ()> {
-    let mut n_smallest: Vec<i32> = vec![];
+fn n_smallest(lengths: &[i32], n: u32) -> Result<Vec<i32>, ()> {
+    let mut smallest_numbers: Vec<i32> = vec![];
     match lengths.iter().min() {
-        Some(val) => n_smallest.push(*val),
+        Some(val) => smallest_numbers.push(*val),
         None => return Err(()),
     }
     for _ in 1..n {
-        let smallest = match n_smallest.last() {
+        let smallest = match smallest_numbers.last() {
             Some(val) => val,
             None => return Err(()),
         };
@@ -82,12 +94,8 @@ fn product_of_n_smallest(lengths: Vec<i32>, n: u32) -> Result<i32, ()> {
             .chain(lengths[position + 1..].iter())
             .collect();
         if let Some(val) = slice.iter().min() {
-            n_smallest.push(**val)
+            smallest_numbers.push(**val)
         }
     }
-    Ok(n_smallest
-        .iter()
-        .copied()
-        .reduce(|acc, val| acc * val)
-        .expect("There should be at least one element in n_smallest as long as n > 0"))
+    Ok(smallest_numbers)
 }
