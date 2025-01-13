@@ -41,3 +41,44 @@ where
     }
     (floor, basement_entered)
 }
+
+#[cfg(test)]
+mod test {
+    use std::io::Cursor;
+
+    use super::*;
+
+    #[test]
+    fn validate_part1_examples() {
+        validate_part1("(())", 0);
+        validate_part1("()()", 0);
+        validate_part1("(((", 3);
+        validate_part1("(()(()(", 3);
+        validate_part1("))(((((", 3);
+        validate_part1("())", -1);
+        validate_part1("))(", -1);
+        validate_part1(")))", -3);
+        validate_part1(")())())", -3);
+    }
+
+    fn validate_part1(input: &str, result: isize) {
+        let input_reader = Cursor::new(input);
+        let (floor, _) = santa_floors(input_reader.lines());
+        assert_eq!(floor, result);
+    }
+
+    #[test]
+    fn validate_part2_examples() {
+        validate_part2(")", 1);
+        validate_part2("()())", 5);
+    }
+
+    fn validate_part2(input: &str, result: usize) {
+        let input_reader = Cursor::new(input);
+        let (_, basement_position) = santa_floors(input_reader.lines());
+        match basement_position {
+            Some(position) => assert_eq!(position, result),
+            None => panic!("failed"),
+        }
+    }
+}
