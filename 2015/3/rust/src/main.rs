@@ -68,3 +68,47 @@ where
     visited
 }
 
+#[cfg(test)]
+mod test {
+    use io::Cursor;
+
+    use super::*;
+
+    #[test]
+    fn verify_task1_examples() {
+        let input = ">";
+        println!("Test 1");
+        let input_reader = Cursor::new(input);
+        let visited = santas_visits(input_reader.lines(), 1);
+        assert_eq!(visited, 2);
+
+        let input = "^>v<";
+        let input_reader = Cursor::new(input);
+        let visited = santas_visits(input_reader.lines(), 1);
+        assert_eq!(visited, 4);
+
+        let input = "^v^v^v^v^v";
+        let input_reader = Cursor::new(input);
+        let visited = santas_visits(input_reader.lines(), 1);
+        assert_eq!(visited, 2);
+    }
+
+    #[test]
+    fn verify_task2_examples() {
+        let input = "^v";
+        println!("Test 2");
+        let input_reader = Cursor::new(input);
+        let visited = santas_visits(input_reader.lines(), 2);
+        assert_eq!(visited, 3);
+
+        let input = "^>v<";
+        let input_reader = Cursor::new(input);
+        let visited = santas_visits(input_reader.lines(), 2);
+        assert_eq!(visited, 3);
+
+        let input = "^v^v^v^v^v";
+        let input_reader = Cursor::new(input);
+        let visited = santas_visits(input_reader.lines(), 2);
+        assert_eq!(visited, 11);
+    }
+}
