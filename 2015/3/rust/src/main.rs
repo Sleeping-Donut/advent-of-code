@@ -25,7 +25,7 @@ fn main() {
     println!("visited: {}", with_robo_visits);
 }
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Eq, Hash, PartialEq)]
 struct Position {
     x: isize,
     y: isize,
@@ -35,13 +35,13 @@ fn santas_visits<I>(lines: I, n: usize) -> usize
 where
     I: Iterator<Item = Result<String, io::Error>>,
 {
-    let mut houses = HashSet::new();
+    let mut houses: HashSet<Position> = HashSet::new();
     let mut santas_pos: Vec<Position> = vec![Position::default(); n];
     let mut visited: usize = 0;
     let mut which_santa = 0;
 
     // Starting location counts as visited
-    houses.insert("0-0".to_string()); // starting pos
+    houses.insert(Position { x: 0, y: 0 }); // starting pos
     visited += 1;
 
     for line in lines {
@@ -56,10 +56,10 @@ where
 
             santas_pos[which_santa].x += xd;
             santas_pos[which_santa].y += yd;
-            if houses.insert(format!(
-                "{}-{}",
-                santas_pos[which_santa].x, santas_pos[which_santa].y
-            )) {
+            if houses.insert(Position {
+                x: santas_pos[which_santa].x,
+                y: santas_pos[which_santa].y,
+            }) {
                 visited += 1;
             }
             which_santa = (which_santa + 1) % n;
