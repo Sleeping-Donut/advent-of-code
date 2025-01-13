@@ -82,30 +82,14 @@ fn parse_dimensions(text_dimensions: String) -> Result<(usize, usize, usize), ()
     Ok((length, width, height))
 }
 
-fn n_smallest(lengths: &[usize], n: u32) -> Result<Vec<usize>, ()> {
-    let mut smallest_numbers: Vec<usize> = vec![];
-    match lengths.iter().min() {
-        Some(val) => smallest_numbers.push(*val),
-        None => return Err(()),
+fn n_smallest(lengths: &[usize], n: usize) -> Result<Vec<usize>, ()> {
+    if lengths.len() < n {
+        return Err(());
     }
-    for _ in 1..n {
-        let smallest = match smallest_numbers.last() {
-            Some(val) => val,
-            None => return Err(()),
-        };
-        let position = lengths
-            .iter()
-            .position(|val| val == smallest)
-            .expect("Value should exist as it was just found");
-        let slice: Vec<&usize> = lengths[..position]
-            .iter()
-            .chain(lengths[position + 1..].iter())
-            .collect();
-        if let Some(val) = slice.iter().min() {
-            smallest_numbers.push(**val)
-        }
-    }
-    Ok(smallest_numbers)
+    let mut numbers = lengths.to_vec();
+    numbers.sort();
+    let smallest = &numbers[..n];
+    Ok(smallest.to_vec())
 }
 
 #[cfg(test)]
