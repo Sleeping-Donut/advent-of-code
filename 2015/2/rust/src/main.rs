@@ -107,3 +107,35 @@ fn n_smallest(lengths: &[usize], n: u32) -> Result<Vec<usize>, ()> {
     }
     Ok(smallest_numbers)
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::io::Cursor;
+
+    #[test]
+    fn validate_part1_examples() {
+        let input = "2x3x4";
+        let input_reader = Cursor::new(input);
+        let christmas_order = calculate_order_quantity(input_reader.lines());
+        assert_eq!(christmas_order.paper, 58);
+
+        let input = "1x1x10";
+        let input_reader = Cursor::new(input);
+        let christmas_order = calculate_order_quantity(input_reader.lines());
+        assert_eq!(christmas_order.paper, 43);
+    }
+
+    #[test]
+    fn validate_part2_examples() {
+        let input = "2x3x4";
+        let input_reader = Cursor::new(input);
+        let christmas_order = calculate_order_quantity(input_reader.lines());
+        assert_eq!(christmas_order.ribbon, 34);
+
+        let input = "1x1x10";
+        let input_reader = Cursor::new(input);
+        let christmas_order = calculate_order_quantity(input_reader.lines());
+        assert_eq!(christmas_order.ribbon, 14);
+    }
+}
