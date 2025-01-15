@@ -9,14 +9,11 @@ fn main() {
     let file = File::open(file_path).expect("File must exist");
     let file_reader = BufReader::new(file);
 
-    let nice_total: usize = file_reader.lines().fold(0, |acc, line| {
-        if let Ok(l) = line {
-            if is_string_nice(l.as_str()) {
-                return acc + 1;
-            }
-        }
-        acc
-    });
+    let nice_total: usize = file_reader
+        .lines()
+        .map(Result::unwrap_or_default)
+        .filter(|line| is_string_nice_part1(line))
+        .count();
 
     println!("nice: {}", nice_total);
 }
